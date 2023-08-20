@@ -70,9 +70,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Capstone.wsgi.application'
 
+AUTH_USER_MODEL = 'news_outlet.User'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+
 
 DATABASES = {
     'default': {

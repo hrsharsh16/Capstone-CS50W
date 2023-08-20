@@ -1,0 +1,15 @@
+{% extends "news_outlet/layout.html" %}
+
+{% load static %}
+{% block body %}
+    <br><br><br>
+    <h1>Register</h1>
+    <br>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+
+{% endblock %}
