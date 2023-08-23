@@ -9,4 +9,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('reader_dashboard/', views.reader_dashboard, name='reader_dashboard'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('create_article/', views.create_article, name='create_article'),
+    path('article/<int:pk>/', views.article_detail, name='article_detail'),
  ]

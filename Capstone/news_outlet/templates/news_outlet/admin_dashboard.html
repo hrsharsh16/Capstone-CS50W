@@ -2,6 +2,64 @@
 
 {% block body %}
     <br><br><br>
-    <h2>Admin Dashboard</h2>
-    <!-- Your admin dashboard content here -->
+    <h2 class="mx-3 text-light">Welcome {{ request.user.username }}</h2>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <button id="new_article" class="btn btn-primary">Create a new article {{ request.user.username }}?</button>
+                <div class="bg-dark p-4 rounded" id="show_form" style="display: none";>
+                    <h3 class="text-light">Create a New Article</h3>
+                    <form method="post" action="{% url 'create_article' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label text-light">Title:</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label text-light">Content (Markdown format):</label>
+                            <textarea class="form-control" name="content" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publish Article</button>
+                        <button type="submit" class="btn btn-warning mx-5" id="discard_button">Discard</button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-dark p-4 rounded">
+                    <h3 class="text-light">Your Articles</h3>
+                    <ul class="list-group">
+                        {% for article in articles  %}
+                            <li class="list-group-item bg-dark text-light">
+                                <a href="{% url 'article_detail' article.pk %}" class="text-light">{{ article.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // script for showing from
+        document.getElementById('new_article').addEventListener('click', function() {
+            var form = document.getElementById('show_form');
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                document.getElementById('new_article').style.display = 'none';
+            }
+        });
+
+        // script for discard button
+        document.getElementById('discard_button').addEventListener('click', function() {
+        var titleInput = document.querySelector('#show_form input[name="title"]');
+        var contentTextarea = document.querySelector('#show_form textarea[name="content"]');
+        
+        titleInput.value = '';
+        contentTextarea.value = '';
+
+        document.getElementById('show_form').style.display = 'none';
+        document.getElementById('new_article').style.display = 'block';
+    });
+    </script>
 {% endblock %}

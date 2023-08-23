@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect
 from django.urls import reverse
 
 from .forms import CustomUserCreationForm
-from .models import User
+from .models import User, Article
 
 # Create your views here.
 def index(request):
@@ -45,6 +45,20 @@ def reader_dashboard(request):
     return render(request, 'news_outlet/reader_dashboard.html')
 
 def admin_dashboard(request):
-    return render(request, 'news_outlet/admin_dashboard.html')
+    articles = Article.objects.filter(author=request.user)
+    context = {'articles': articles}
+    return render(request, 'news_outlet/admin_dashboard.html', context)
         
+def create_article(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        article = Article.objects.create(author=request.user, title=title, content=content)
+        return redirect('admin_dashboard')  # Redirect to the admin dashboard after article creation
+    
+    return render(request, 'news_outlet/admin_dashboard.html')
+
+def article_detail(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    return render(request, 'news_outlet/article_detail.html', {'article': article})
 

@@ -1,0 +1,11 @@
+{% extends 'news_outlet/layout.html' %}
+
+{% block body %}
+    <br><br><br>
+    <div class="container mt-5">
+        <div class="bg-dark p-4 rounded">
+            <h2 class="text-light">{{ article.title }}</h2>
+            <p class="text-light">{{ article.get_rendered_content|safe }}</p>
+        </div>
+    </div>
+{% endblock %}
