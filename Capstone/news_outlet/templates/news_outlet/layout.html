@@ -39,6 +39,11 @@
                     {% if user.is_authenticated %}
                         <!-- User is logged in, show "Sign out" link -->
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+                        {% if user.user_type == 'admin' %}
+                            <!-- Admin user, show admin dashboard link -->
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                        {% endif %}
                     {% else %}
                         <!-- User is not logged in, show "Sign in" link -->
                         <li><a class="dropdown-item" href="{% url 'login' %}">Sign in</a></li>

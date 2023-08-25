@@ -1,11 +1,38 @@
 {% extends 'news_outlet/layout.html' %}
+{% load static %}
 
 {% block body %}
     <br><br><br>
     <div class="container mt-5">
-        <div class="bg-dark p-4 rounded">
-            <h2 class="text-light">{{ article.title }}</h2>
-            <p class="text-light">{{ article.get_rendered_content|safe }}</p>
+        <div class="row">
+            <div class="col-md-8">
+                <h2 class="text-light">{{ article.title }}</h2>
+                <div class="text-light">{% autoescape off %}{{ article.get_rendered_content }}{% endautoescape %}</div>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="row mt-3">
+            <div class="col-md-8">
+                <h3 class="text-light">Add a Comment</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <textarea class="form-control dark-input" name="content" rows="3" required></textarea>
+                    <button type="submit" class="btn btn-primary mt-3">Add Comment</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row mt-3">
+            <div class="col-md-8">
+                <h3 class="text-light">Comments</h3>
+                <ul class="list-group">
+                    {% for comment in comments %}
+                        <li class="list-group-item bg-dark text-light">
+                            <strong>{{ comment.author }}:</strong> {{ comment.content }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

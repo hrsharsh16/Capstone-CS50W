@@ -5,11 +5,13 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from .forms import CustomUserCreationForm
-from .models import User, Article
+from .models import User, Article, Comment
 
 # Create your views here.
 def index(request):
-    return render(request, 'news_outlet/index.html')
+    articles = Article.objects.all()
+    context = {'articles': articles}
+    return render(request, 'news_outlet/index.html', context)
 
 class CustomLoginView(LoginView):
     template_name = 'news_outlet/login.html'  # Replace with your login template
@@ -60,5 +62,15 @@ def create_article(request):
 
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
-    return render(request, 'news_outlet/article_detail.html', {'article': article})
+    comments = Comment.objects.filter(article=article)
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            content = request.POST['content']
+            comment = Comment(article=article, author=request.user, content=content)
+            comment.save()
+            return redirect('article_detail', pk=pk)
+
+    context = {'article': article, 'comments': comments}
+    return render(request, 'news_outlet/article_detail.html', context)
 
