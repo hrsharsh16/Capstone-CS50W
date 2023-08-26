@@ -13,10 +13,14 @@
         <div class="row">
             {% for article in articles %}
                 <div class="col-md-4 mb-4">
-                    <div class="bg-dark p-4 rounded">
-                        <h3 class="text-light">{{ article.title }}</h3>
-                        <p class="text-light">{{ article.get_rendered_content|truncatechars:150|safe }}</p>
-                        <a href="{% url 'article_detail' article.pk %}" class="btn btn-outline-light">Read More</a>
+                    <div class="card text-white bg-dark">
+                        <a href="{% url 'article_detail' article.pk %}" style="text-decoration: none;">
+                            <img src="{% static 'news_outlet/img/placeholder.png' %}" class="card-img-top" alt="Article image">
+                        </a>
+                        <div class="card-body">
+                            <h3 class="card-title">{{ article.title }}</h3>
+                            <p class="card-text">{{ article.get_rendered_content|truncatechars:200|safe }}</p>
+                        </div>
                     </div>
                 </div>
             {% endfor %}

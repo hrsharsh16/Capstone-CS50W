@@ -1,7 +1,41 @@
 {% extends 'news_outlet/layout.html' %}
 
 {% block body %}
-<br><br><br>
-    <h2>Reader Dashboard</h2>
-    <!-- Your dashboard content here -->
+    <br><br><br>
+    <h2 class="text-light display-4 my-4">
+        {{ request.user.username }}'s dashboard
+    </h2>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bg-dark p-3 rounded">
+                    <h3 class="text-light">Your Comments</h3>
+                    <ul class="list-group">
+                        {% for comment in request.user.comment_set.all %}
+                            <li class="list-group-item bg-dark text-light">
+                                <span class="text-primary">On</span>
+                                <a href="{% url 'article_detail' comment.article.pk %}" class="text-light">{{ comment.article.title }}</a>
+                                <span class="text-primary">you commented:</span>
+                                {{ comment.content }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4 class="text-light my-4">Articles for you</h4>
+                {% for article in articles %}
+                    <div class="card mb-4">
+                        <div class="card-body bg-dark">
+                            <h3 class="card-title "><a href="{% url 'article_detail' article.pk %}" style="text-decoration: none;" >{{article.title}}</a></h3>
+                            <div class="card-text text-light white-space: pre-line">
+                                {{ article.get_rendered_content|truncatechars:200|safe }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

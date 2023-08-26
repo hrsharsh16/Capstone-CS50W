@@ -44,7 +44,9 @@ def register(request):
 
 
 def reader_dashboard(request):
-    return render(request, 'news_outlet/reader_dashboard.html')
+    articles = Article.objects.all()
+    context = {'articles': articles}
+    return render(request, 'news_outlet/reader_dashboard.html', context)
 
 def admin_dashboard(request):
     articles = Article.objects.filter(author=request.user)
@@ -74,3 +76,9 @@ def article_detail(request, pk):
     context = {'article': article, 'comments': comments}
     return render(request, 'news_outlet/article_detail.html', context)
 
+
+def search(request):
+    query = request.GET.get('q')  # Get the search query from the URL parameter
+    articles = Article.objects.filter(title__icontains=query) if query else []
+    context = {'query': query, 'articles': articles}
+    return render(request, 'news_outlet/search_results.html', context)

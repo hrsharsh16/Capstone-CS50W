@@ -1,0 +1,29 @@
+{% extends 'news_outlet/layout.html' %}
+
+{% block body %}
+    <br><br><br>
+    <h2 class="mx-3 text-light">Search Results for "{{ query }}"</h2>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group">
+                    {% for article in articles %}
+                    <div class="card mb-4">
+                        <div class="card-body bg-dark">
+                            <h3 class="card-title "><a href="{% url 'article_detail' article.pk %}" style="text-decoration: none;" >{{article.title}}</a></h3>
+                            <div class="card-text text-light white-space: pre-line">
+                                {{ article.get_rendered_content|truncatechars:200|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <li class="list-group-item bg-dark text-light">
+                            No articles found.
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
