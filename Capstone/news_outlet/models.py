@@ -14,6 +14,8 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     content = models.TextField()  # Store the article content in Markdown format
+    bookmarked_by = models.ManyToManyField(User, related_name='bookmarked_articles', blank=True)
+
 
     #convert markdown to html
     def get_rendered_content(self):

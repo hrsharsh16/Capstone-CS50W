@@ -1,42 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const saveButton = document.querySelector('#save-article');
-
-    if (saveButton) {
-        const isSaved = localStorage.getItem('isSaved');
-
-        if (isSaved !== null) {
-            saveButton.innerText = 'Unsave Article';
-        } else {
-            saveButton.innerText = 'Save Article';
-        }
-
-        saveButton.addEventListener('click', function() {
-            const articleId = saveButton.getAttribute('data-article-id');
-            
-            fetch(`/save_article/${articleId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.saved !== undefined) {
-                    isSaved = data.saved;
-                    localStorage.setItem('isSaved', isSaved);
-
-                    if (isSaved) {
-                        saveButton.innerText = 'Unsave Article';
-                    } else {
-                        saveButton.innerText = 'Save Article';
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('An error occurred:', error);
-            });
-        });
-    }
+    const saveButton = document.getElementById('save-article');
+    saveButton.addEventListener('click', () => save_unsave(saveButton.getAttribute('data-article-id')));
 });
+
+function save_unsave(articleId) {
+    const saveButton = document.getElementById('save-article');
+
+    fetch(`/save_article/${articleId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: 'action= bookmark',
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.result); // Check for the correct key 'result'
+        console.log(data.error);  // save any errors
+        if (data.result === "saved") {
+            saveButton.innerText = 'Unsave Article';
+            saveButton.classList.remove('btn-primary');
+            saveButton.classList.add('btn-warning');
+        } else if (data.result === "deleted") {
+            saveButton.innerText = 'Save Article';
+            saveButton.classList.remove('btn-warning');
+            saveButton.classList.add('btn-primary');
+        } else {
+            console.log("if eleif failed")
+            saveButton.innerText = 'Unable';
+        }
+    });
+}

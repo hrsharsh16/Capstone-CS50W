@@ -3,13 +3,15 @@ from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 from .forms import CustomUserCreationForm
 from .models import User, Article, Comment
 
 # Create your views here.
 def index(request):
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("-created_at")
     context = {'articles': articles}
     return render(request, 'news_outlet/index.html', context)
 
@@ -42,17 +44,21 @@ def register(request):
     
     return render(request, 'news_outlet/register.html', {'form': form})
 
-
+@login_required
 def reader_dashboard(request):
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("-created_at")
     context = {'articles': articles}
     return render(request, 'news_outlet/reader_dashboard.html', context)
 
+
+@login_required
 def admin_dashboard(request):
-    articles = Article.objects.filter(author=request.user)
+    articles = Article.objects.filter(author=request.user).order_by("-created_at")
     context = {'articles': articles}
     return render(request, 'news_outlet/admin_dashboard.html', context)
-        
+
+
+@login_required        
 def create_article(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -61,6 +67,8 @@ def create_article(request):
         return redirect('admin_dashboard')  # Redirect to the admin dashboard after article creation
     
     return render(request, 'news_outlet/admin_dashboard.html')
+
+
 
 def article_detail(request, pk):
     article = get_object_or_404(Article, pk=pk)
@@ -82,3 +90,21 @@ def search(request):
     articles = Article.objects.filter(title__icontains=query) if query else []
     context = {'query': query, 'articles': articles}
     return render(request, 'news_outlet/search_results.html', context)
+
+
+@login_required
+def save_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    user = request.user
+
+    if request.method == 'POST':
+        if article in user.bookmarked_articles.all():
+            user.bookmarked_articles.remove(article)
+            result = "deleted"
+        else:
+            user.bookmarked_articles.add(article)
+            result = "saved"
+
+        return JsonResponse({'result': result})
+
+    return JsonResponse({'error': 'Invalid request'})

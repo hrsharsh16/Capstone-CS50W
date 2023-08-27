@@ -5,16 +5,23 @@
     <br><br><br>
     <div class="container mt-5">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="d-flex justify-content-between mb-3">
-                    <h2 class="text-light">{{ article.title }}</h2>
+                    <h1 class="text-light">{{ article.title }}</h1>
+                    {% if user.is_authenticated %}
+                        {% if article in user.bookmarked_articles.all %}
+                            <button id="save-article" class="btn btn-warning" data-article-id="{{ article.pk }}">Unsave Article</button>
+                        {% else %}
+                            <button id="save-article" class="btn btn-primary" data-article-id="{{ article.pk }}">Save Article</button>
+                        {% endif %}
+                    {% endif %}
                 </div>
                 <div class="text-light">{% autoescape off %}{{ article.get_rendered_content }}{% endautoescape %}</div>
             </div>
         </div>
         {% if user.is_authenticated %}
         <div class="row mt-3">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <h3 class="text-light">Add a Comment</h3>
                 <form method="post">
                     {% csrf_token %}
@@ -25,12 +32,13 @@
         </div>
         {% endif %}
         <div class="row mt-3">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <h3 class="text-light">Comments</h3>
                 <ul class="list-group">
                     {% for comment in comments %}
                         <li class="list-group-item bg-dark text-light">
-                            <strong>{{ comment.author }}:</strong> {{ comment.content }}
+                            <strong>{{ comment.author }}:</strong>
+                            <p>{{ comment.content }}</p>
                         </li>
                     {% endfor %}
                 </ul>
