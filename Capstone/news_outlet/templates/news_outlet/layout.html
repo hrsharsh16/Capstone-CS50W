@@ -37,6 +37,7 @@
                   </a>
                   <ul class="dropdown-menu dropdown-menu-dark">
                     {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'saved_articles' %}">saved articles</a></li>
                         <!-- User is logged in, show "Sign out" link -->
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
                         {% if user.user_type == 'admin' %}

@@ -12,4 +12,5 @@ urlpatterns = [
     path('article/<int:pk>/', views.article_detail, name='article_detail'),
     path('search/', views.search, name='search'),
     path('save_article/<int:pk>/', views.save_article, name='save_article'),
+    path('saved_articles', views.saved_articles, name='saved_articles'),
  ]

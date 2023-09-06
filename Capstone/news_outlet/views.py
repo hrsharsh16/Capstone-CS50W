@@ -108,3 +108,11 @@ def save_article(request, pk):
         return JsonResponse({'result': result})
 
     return JsonResponse({'error': 'Invalid request'})
+
+@login_required
+def saved_articles(request):
+    user = request.user
+    bookmarked_articles = Article.objects.filter(bookmarked_by=user)
+
+    context = {'bookmarked_articles': bookmarked_articles}
+    return render(request, 'news_outlet/saved_articles.html', context)
