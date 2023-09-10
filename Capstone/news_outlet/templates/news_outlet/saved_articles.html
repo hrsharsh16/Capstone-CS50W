@@ -4,14 +4,15 @@
 {% block body %}
     <br><br><br>
     <div class="container mt-5">
-        <h2 class="text-light">Saved Articles</h2>
+        <h2 class="text-white">Saved Articles</h2>
         <div class="row">
             {% for article in bookmarked_articles %}
-                <div class="col-md-6">
-                    <div class="card mb-4">
+                <div class="col-md-6 my-3">
+                    <div class="card bg-dark text-white">
+                        <img src="{% static 'news_outlet/img/placeholder.png' %}" class="card-img-top" alt="Article image" style="width: 400px; height: 400px; text-align: center;">
                         <div class="card-body">
                             <h5 class="card-title">{{ article.title }}</h5>
-                            <p class="card-text">{{ article.summary }}</p>
+                            <p class="card-text">{{ article.get_rendered_content|truncatechars:200|safe }}</p>
                             <a href="{% url 'article_detail' article.pk %}" class="btn btn-primary">Read More</a>
                         </div>
                     </div>
